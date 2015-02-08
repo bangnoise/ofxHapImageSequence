@@ -27,7 +27,13 @@ void ofxHapImageSequence::load(ofDirectory &directory)
 
 void ofxHapImageSequence::load(const std::string &path)
 {
-    directory_ = ofDirectory(path);
+    ofFile file(path, ofFile::Reference);
+    if (file.exists() && !file.isDirectory())
+    {
+        file = ofFile(file.getEnclosingDirectory(), ofFile::Reference);
+    }
+    // listDir() and sort() are slow in Debug builds on Windows
+    directory_ = ofDirectory(file.getAbsolutePath());
     directory_.allowExt(ofxHapImage::HapImageFileExtension());
     directory_.listDir();
     directory_.sort();
