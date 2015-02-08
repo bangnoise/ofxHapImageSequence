@@ -23,7 +23,7 @@ void ofApp::draw(){
          Calculate the current looped frame number
          */
         int this_frame = ofGetFrameNum() % sequence.size();
-        ofxHapImage image = sequence.getImage(this_frame);
+        ofxHapImage image = sequence[this_frame];
         image.draw((ofGetWindowWidth() / 2) - (image.getWidth() / 2), (ofGetWindowHeight() / 2) - (image.getHeight() / 2));
     }
 }

@@ -39,12 +39,12 @@ void ofxHapImageSequence::load(const std::string &path)
     directory_.sort();
 }
 
-unsigned int ofxHapImageSequence::size()
+unsigned int ofxHapImageSequence::size() // this could be const if ofDirectory.size() were const
 {
     return directory_.size();
 }
 
-ofxHapImage ofxHapImageSequence::getImage(unsigned int index)
+ofxHapImage ofxHapImageSequence::operator[](unsigned int index)
 {
     return ofxHapImage(directory_[index]);
 }
