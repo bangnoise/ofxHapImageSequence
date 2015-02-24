@@ -7,7 +7,17 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    if (sequence.size() > 0)
+    {
+        /*
+         Calculate the current looped frame number
+         */
+        int this_frame = ofGetFrameNum() % sequence.size();
+        /*
+         Update our image
+         */
+        image.loadImage(sequence[this_frame]);
+    }
 }
 
 //--------------------------------------------------------------
@@ -19,11 +29,6 @@ void ofApp::draw(){
     }
     else
     {
-        /*
-         Calculate the current looped frame number
-         */
-        int this_frame = ofGetFrameNum() % sequence.size();
-        ofxHapImage image = sequence[this_frame];
         image.draw((ofGetWindowWidth() / 2) - (image.getWidth() / 2), (ofGetWindowHeight() / 2) - (image.getHeight() / 2));
     }
 }

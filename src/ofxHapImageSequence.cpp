@@ -44,7 +44,7 @@ unsigned int ofxHapImageSequence::size() // this could be const if ofDirectory.s
     return directory_.size();
 }
 
-ofxHapImage ofxHapImageSequence::operator[](unsigned int index)
+std::string ofxHapImageSequence::operator[](unsigned int index)
 {
-    return ofxHapImage(directory_[index]);
+    return directory_[index].path();
 }

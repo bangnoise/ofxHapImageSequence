@@ -11,7 +11,7 @@ public:
     void load(ofDirectory& directory);
     void load(const std::string& path);
     unsigned int size();
-    ofxHapImage operator [](unsigned int index);
+    std::string operator [](unsigned int index);
 private:
     ofDirectory directory_;
 };
