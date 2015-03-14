@@ -32,19 +32,66 @@ void ofxHapImageSequence::load(const std::string &path)
     {
         file = ofFile(file.getEnclosingDirectory(), ofFile::Reference);
     }
+    path_ = file.getAbsolutePath();
+
+    std::string xml_path = ofFilePath::addTrailingSlash(file.getAbsolutePath()) + "directory_cache.xml";
+    ofFile xml_file(xml_path, ofFile::Reference);
+    if (xml_file.exists())
+    {
+        Poco::Timestamp directory_modification = file.getPocoFile().getLastModified();
+        Poco::Timestamp xml_modification = xml_file.getPocoFile().getLastModified();
+        if (xml_modification < directory_modification)
+        {
+            xml_file.remove();
+        }
+    }
+    if (xml_file.exists())
+    {
+        paths_.clear();
+        ofXml cache(xml_path);
+        cache.setTo("playlist");
+        if (cache.setToChild(0))
+        {
+            do {
+                paths_.push_back(cache.getValue());
+            } while (cache.setToSibling());
+        }
+    }
+    else
+    {
+        reload();
+    }
+}
+
+void ofxHapImageSequence::reload()
+{
+    paths_.clear();
+    ofDirectory directory(path_);
+    directory.allowExt(ofxHapImage::HapImageFileExtension());
     // listDir() and sort() are slow in Debug builds on Windows
-    directory_ = ofDirectory(file.getAbsolutePath());
-    directory_.allowExt(ofxHapImage::HapImageFileExtension());
-    directory_.listDir();
-    directory_.sort();
+    directory.listDir();
+    directory.sort();
+
+    ofXml cache;
+    cache.addChild("playlist");
+    for (unsigned int i = 0; i < directory.size(); i++) {
+        std::string this_file = directory[i].getFileName();
+        paths_.push_back(this_file);
+        ofXml file_xml;
+        file_xml.addChild("file");
+        file_xml.setTo("file");
+        file_xml.setValue("", this_file);
+        cache.addXml(file_xml);
+    }
+    cache.save(ofFilePath::addTrailingSlash(path_) + "directory_cache.xml");
 }
 
 unsigned int ofxHapImageSequence::size() // this could be const if ofDirectory.size() were const
 {
-    return directory_.size();
+    return paths_.size();
 }
 
-std::string ofxHapImageSequence::operator[](unsigned int index)
+std::string ofxHapImageSequence::operator[](unsigned int index) const
 {
-    return directory_[index].path();
+    return ofFilePath::addTrailingSlash(path_) + paths_[index];
 }
