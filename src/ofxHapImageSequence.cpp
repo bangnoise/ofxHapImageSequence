@@ -38,8 +38,8 @@ void ofxHapImageSequence::load(const std::string &path)
     ofFile xml_file(xml_path, ofFile::Reference);
     if (xml_file.exists())
     {
-        Poco::Timestamp directory_modification = file.getPocoFile().getLastModified();
-        Poco::Timestamp xml_modification = xml_file.getPocoFile().getLastModified();
+        std::time_t directory_modification = std::filesystem::last_write_time(file);
+        std::time_t xml_modification = std::filesystem::last_write_time(xml_file);
         if (xml_modification < directory_modification)
         {
             xml_file.remove();
